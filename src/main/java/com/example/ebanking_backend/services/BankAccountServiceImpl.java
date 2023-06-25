@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -191,4 +192,15 @@ public class BankAccountServiceImpl implements BankAccountService{
         return accountHistoryDTO;
     }
 
+    @Override
+    public List<CustomerDTO> searchCustomers(String keyword) {
+        List<Customer> customers= customerRepository.findByNameContains(keyword);
+        List<CustomerDTO> customersDTO =customers.stream().map(cust->dtoMapper.fromCustomer(cust)).collect(Collectors.toList());
+    return customersDTO;
+    }
+    @Override
+    public List<BankAccount> getaccountsCustomer(Long CustomerId) {
+        Optional<Customer> customer = customerRepository.findById(CustomerId);
+        return bankAccountRepository.findByCustomer(customer);
+    }
 }
